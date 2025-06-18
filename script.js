@@ -39,7 +39,11 @@ function compareHoldings(oldData, newData) {
   for (const [address, newRow] of newMap.entries()) {
     if (oldMap.has(address)) {
       const oldRow = oldMap.get(address);
-      const diff = newRow['持仓'] - oldRow['持仓'];
+      
+    const oldValue = parseFloat((oldRow['持仓占比'] || "").toString().replace('%', '')) || 0;
+    const newValue = parseFloat((newRow['持仓占比'] || "").toString().replace('%', '')) || 0;
+    const diff = newValue - oldValue;
+    
       if (diff !== 0) {
         changed.push({ address, old: oldRow['持仓'], new: newRow['持仓'], diff });
       }
