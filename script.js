@@ -8,7 +8,14 @@ function processFiles() {
   }
 
   Promise.all([readExcel(file1), readExcel(file2)]).then(([oldData, newData]) => {
-    compareHoldings(oldData, newData);
+    
+    const ratioField = Object.keys(newData[0]).find(k => k.includes('占比'));
+    if (!ratioField) {
+      alert("找不到包含‘占比’的字段，请检查Excel文件。");
+      return;
+    }
+    compareHoldings(oldData, newData, ratioField);
+    
   });
 }
 
@@ -26,7 +33,7 @@ function readExcel(file) {
   });
 }
 
-function compareHoldings(oldData, newData) {
+function compareHoldings(oldData, newData, ratioField) {
   const oldMap = new Map();
   const newMap = new Map();
   oldData.forEach(row => oldMap.set(row['地址'], row));
@@ -39,8 +46,8 @@ function compareHoldings(oldData, newData) {
   for (const [address, newRow] of newMap.entries()) {
     if (oldMap.has(address)) {
       const oldRow = oldMap.get(address);
-      const oldValue = parseFloat((oldRow['持仓占比'] || "").toString().replace('%', '')) || 0;
-      const newValue = parseFloat((newRow['持仓占比'] || "").toString().replace('%', '')) || 0;
+      const oldValue = parseFloat((oldRow[ratioField] || '').toString().replace('%','')) || 0;
+      const newValue = parseFloat((newRow[ratioField] || '').toString().replace('%','')) || 0;
       const diff = newValue - oldValue;
       if (Math.abs(diff) > 0.00001) {
         changed.push({ address, old: oldValue, new: newValue, diff });
@@ -79,11 +86,11 @@ function renderResults(changed, added, removed) {
   };
 
   container.innerHTML += buildTable('持仓变化地址', changed, ['address', 'old', 'new', 'diff']);
-  container.innerHTML += buildTable('新增地址', added, ['地址', '持仓占比']);
-  container.innerHTML += buildTable('消失地址', removed, ['地址', '持仓占比']);
+  container.innerHTML += buildTable('新增地址', added, ['地址', ratioField]);
+  container.innerHTML += buildTable('消失地址', removed, ['地址', ratioField]);
 
-  const addedTotal = added.reduce((sum, r) => sum + (parseFloat((r['持仓占比'] || '').toString().replace('%', '')) || 0), 0);
-  const removedTotal = removed.reduce((sum, r) => sum + (parseFloat((r['持仓占比'] || '').toString().replace('%', '')) || 0), 0);
+  const addedTotal = added.reduce((sum, r) => sum + (parseFloat((r[ratioField] || '').toString().replace('%','')) || 0), 0);
+  const removedTotal = removed.reduce((sum, r) => sum + (parseFloat((r[ratioField] || '').toString().replace('%','')) || 0), 0);
 
   container.innerHTML += `<p>新增地址持仓总占比：${addedTotal.toFixed(2)}%</p>`;
   container.innerHTML += `<p>消失地址持仓总占比：${removedTotal.toFixed(2)}%</p>`;
