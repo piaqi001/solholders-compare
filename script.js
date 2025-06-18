@@ -20,10 +20,9 @@ function readExcel(file) {
       const workbook = XLSX.read(data, { type: 'array' });
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       const json = XLSX.utils.sheet_to_json(sheet, {
-        range: 5, // 从第6行开始（跳过前5行）
-        header: ["#", "地址", "数量", "持仓占比", "备注"]
+        range: 3,
+        header: ['#', '地址', '数量', '持仓占比', '备注']
       });
-      console.log("字段列表：", Object.keys(json[0]));
       resolve(json);
     };
     reader.readAsArrayBuffer(file);
@@ -75,14 +74,12 @@ function renderResults(changed, added, removed) {
         if ((c === 'diff' || c === 'old' || c === 'new') && typeof value === 'number') {
           value = value.toFixed(2) + '%';
         }
-        
-      if (c === '持仓占比' && typeof value === 'number') {
-        value = value.toFixed(2) + '%';
-      } else if (c === '持仓占比' && typeof value === 'string' && value.includes('%')) {
-        value = parseFloat(value.replace('%', '')).toFixed(2) + '%';
-      }
-      return `<td>${value ?? ''}</td>`;
-    
+        if (c === '持仓占比' && typeof value === 'number') {
+          value = (value * 100).toFixed(2) + '%';
+        } else if (c === '持仓占比' && typeof value === 'string' && value.includes('%')) {
+          value = parseFloat(value.replace('%', '')).toFixed(2) + '%';
+        }
+        return `<td>${value ?? ''}</td>`;
       }).join('') + '</tr>';
     });
     html += '</table>';
