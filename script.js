@@ -74,8 +74,8 @@ function renderResults(changed, added, removed) {
   container.innerHTML += buildTable('新增地址', added, ['地址', '持仓']);
   container.innerHTML += buildTable('消失地址', removed, ['地址', '持仓']);
 
-  const addedTotal = added.reduce((sum, r) => sum + (parseFloat(r['持仓']) || 0), 0);
-  const removedTotal = removed.reduce((sum, r) => sum + (parseFloat(r['持仓']) || 0), 0);
+  const addedTotal = added.reduce((sum, r) => sum + (parseFloat(r['持仓占比']) || 0), 0);
+  const removedTotal = removed.reduce((sum, r) => sum + (parseFloat(r['持仓占比']) || 0), 0);
 
   container.innerHTML += `<p>新增地址持仓总量：${addedTotal}</p>`;
   container.innerHTML += `<p>消失地址持仓总量：${removedTotal}</p>`;
