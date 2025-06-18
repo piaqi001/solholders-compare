@@ -68,14 +68,22 @@ function renderResults(changed, added, removed) {
   const buildTable = (title, data, columns) => {
     let html = `<h2>${title}</h2><table><tr>${columns.map(c => `<th>${c}</th>`).join('')}</tr>`;
     data.forEach(row => {
-      html += '<tr>' + columns.map(c => `<td>${row[c] ?? ''}</td>`).join('') + '</tr>';
+      
+    html += '<tr>' + columns.map(c => {
+      let value = row[c];
+      if (c === 'diff' && typeof value === 'number') {
+        value = value.toFixed(4);
+      }
+      return `<td>${value ?? ''}</td>`;
+    }).join('') + '</tr>';
+    
     });
     html += '</table>';
     return html;
   };
 
   container.innerHTML += buildTable('持仓变化地址', changed, ['address', 'old', 'new', 'diff']);
-  container.innerHTML += buildTable('新增地址', added, ['地址', '持仓']);
+  container.innerHTML += buildTable('新增地址', added, ['地址', '持仓占比']);
   container.innerHTML += buildTable('消失地址', removed, ['地址', '持仓']);
 
   const addedTotal = added.reduce((sum, r) => sum + (parseFloat(r['持仓占比']) || 0), 0);
