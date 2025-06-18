@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>Solana 持仓对比工具</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Solana 持仓对比工具</h1>
+  <div class="upload-container">
+    <label>上传旧数据：<input type="file" id="file1" accept=".xls,.xlsx" /></label>
+    <label>上传新数据：<input type="file" id="file2" accept=".xls,.xlsx" /></label>
+    <button onclick="processFiles()">开始对比</button>
+  </div>
+  <div id="results"></div>
+  <div id="charts" style="margin-top:40px;"></div>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
