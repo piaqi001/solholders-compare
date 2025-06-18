@@ -19,8 +19,12 @@ function readExcel(file) {
       const data = new Uint8Array(e.target.result);
       const workbook = XLSX.read(data, { type: 'array' });
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const json = XLSX.utils.sheet_to_json(sheet, { range: 4 }); // 从第5行开始
-      console.log('字段列表：', Object.keys(json[0])); resolve(json);
+      const json = XLSX.utils.sheet_to_json(sheet, {
+        range: 5, // 从第6行开始（跳过前5行）
+        header: ["#", "地址", "数量", "持仓占比", "备注"]
+      });
+      console.log("字段列表：", Object.keys(json[0]));
+      resolve(json);
     };
     reader.readAsArrayBuffer(file);
   });
