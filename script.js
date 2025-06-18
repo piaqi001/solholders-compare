@@ -42,7 +42,7 @@ function compareHoldings(oldData, newData) {
       
     const oldValue = parseFloat((oldRow['持仓占比'] || "").toString().replace('%', '')) || 0;
     const newValue = parseFloat((newRow['持仓占比'] || "").toString().replace('%', '')) || 0;
-    const diff = newValue - oldValue;
+    const diff = (newValue - oldValue); row['old'] = oldValue; row['new'] = newValue;
     
       if (diff !== 0) {
         changed.push({ address, old: oldRow['持仓'], new: newRow['持仓'], diff });
@@ -70,9 +70,13 @@ function renderResults(changed, added, removed) {
     data.forEach(row => {
       
     html += '<tr>' + columns.map(c => {
+      
       let value = row[c];
-      if (c === 'diff' && typeof value === 'number') {
-        value = value.toFixed(4);
+      if ((c === 'diff' || c === 'old' || c === 'new') && typeof value === 'number') {
+        value = value.toFixed(2) + '%';
+      }
+
+        value = value.toFixed(2) + '%';
       }
       return `<td>${value ?? ''}</td>`;
     }).join('') + '</tr>';
