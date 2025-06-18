@@ -62,6 +62,7 @@ function compareHoldings(oldData, newData) {
   renderResults(changed, added, removed);
 }
 
+
 function renderResults(changed, added, removed) {
   const container = document.getElementById('results');
   container.innerHTML = '';
@@ -93,10 +94,7 @@ function renderResults(changed, added, removed) {
   const addedTotal = added.reduce((sum, r) => sum + (parseFloat((r['持仓占比'] || '').toString().replace('%', '')) || 0), 0);
   const removedTotal = removed.reduce((sum, r) => sum + (parseFloat((r['持仓占比'] || '').toString().replace('%', '')) || 0), 0);
 
-  container.innerHTML += `<p>新增地址持仓总占比：${(addedTotal).toFixed(2)}%</p>`;
-  container.innerHTML += `<p>消失地址持仓总占比：${(removedTotal).toFixed(2)}%</p>`;
-
-
-  
-  
+  container.innerHTML += `<p>新增地址持仓总占比：${(addedTotal * 100).toFixed(2)}%</p>`;
+  container.innerHTML += `<p>消失地址持仓总占比：${(removedTotal * 100).toFixed(2)}%</p>`;
 }
+
