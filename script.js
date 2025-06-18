@@ -75,7 +75,14 @@ function renderResults(changed, added, removed) {
         if ((c === 'diff' || c === 'old' || c === 'new') && typeof value === 'number') {
           value = value.toFixed(2) + '%';
         }
-        return `<td>${value ?? ''}</td>`;
+        
+      if (c === '持仓占比' && typeof value === 'number') {
+        value = value.toFixed(2) + '%';
+      } else if (c === '持仓占比' && typeof value === 'string' && value.includes('%')) {
+        value = parseFloat(value.replace('%', '')).toFixed(2) + '%';
+      }
+      return `<td>${value ?? ''}</td>`;
+    
       }).join('') + '</tr>';
     });
     html += '</table>';
